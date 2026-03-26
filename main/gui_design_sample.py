@@ -12,6 +12,7 @@ HTML_PAGE = """
     <title>Simple MHTML Saver</title>
 </head>
 <body>
+    <h1>Cs15-2 Comparison of Different Types of True and Fake News, Both in Text and Visuals</h1>
     <h2>Save webpage as .mhtml</h2>
     <form method="post" action="/save">
         <input type="text" name="url" placeholder="https://example.com" style="width: 400px;" required>
