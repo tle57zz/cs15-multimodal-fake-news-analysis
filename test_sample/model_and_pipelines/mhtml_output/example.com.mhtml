@@ -1,0 +1,41 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://example.com/
+Subject: Example Domain
+Date: Thu, 26 Mar 2026 17:28:33 +1100
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--0g9NUJeUFLO6gqpjcbjfnaUgIUuTKNoe9QI1j0V8S7----"
+
+
+------MultipartBoundary--0g9NUJeUFLO6gqpjcbjfnaUgIUuTKNoe9QI1j0V8S7----
+Content-Type: text/html
+Content-ID: <frame-5C8190BE9730A7263B363EE2B3662F88@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://example.com/
+
+<!DOCTYPE html><html lang=3D"en"><head><meta http-equiv=3D"Content-Type" co=
+ntent=3D"text/html; charset=3Dwindows-1252"><link rel=3D"stylesheet" type=
+=3D"text/css" href=3D"cid:css-9c5e5327-1294-462c-b7dd-db37c377d8b4@mhtml.bl=
+ink" /><title>Example Domain</title><meta name=3D"viewport" content=3D"widt=
+h=3Ddevice-width, initial-scale=3D1"></head><body><div><h1>Example Domain</=
+h1><p>This domain is for use in documentation examples without needing perm=
+ission. Avoid use in operations.</p><p><a href=3D"https://iana.org/domains/=
+example">Learn more</a></p></div>
+</body></html>
+------MultipartBoundary--0g9NUJeUFLO6gqpjcbjfnaUgIUuTKNoe9QI1j0V8S7----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: cid:css-9c5e5327-1294-462c-b7dd-db37c377d8b4@mhtml.blink
+
+@charset "windows-1252";
+
+body { background: rgb(238, 238, 238); width: 60vw; margin: 15vh auto; font=
+-family: system-ui, sans-serif; }
+
+h1 { font-size: 1.5em; }
+
+div { opacity: 0.8; }
+
+a:link, a:visited { color: rgb(51, 68, 136); }
+------MultipartBoundary--0g9NUJeUFLO6gqpjcbjfnaUgIUuTKNoe9QI1j0V8S7------
