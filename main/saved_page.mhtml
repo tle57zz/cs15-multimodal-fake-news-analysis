@@ -1,0 +1,213 @@
+From: <Saved by Flask>
+Subject: https://www.thanhle.it.com/explore.html
+Date: Tue, 31 Mar 2026 14:13:53 +0000
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="BOUNDARY"
+
+--BOUNDARY
+Content-Type: text/html; charset="utf-8"
+Content-Location: https://www.thanhle.it.com/explore.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Exploration</title>
+    <!-- Styles controlling layout, card look-and-feel, and hover interaction -->
+    <style>
+        /* Page-level reset and full-height canvas */
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+        /* Full-page background image (DSCF6732.jpg) with dark overlay for readability */
+        body {
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('img/DSCF6732.jpg') center/cover no-repeat fixed;
+        }
+        /* Flex container that centers the cards both vertically and horizontally */
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: transparent;
+            border: 0;
+            box-sizing: border-box;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        /* Base card appearance with liquid glass feel */
+        .color-box {
+            width: 220px;
+            height: 220px;
+            margin: 0 18px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #111;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.28);
+            box-shadow: 0 8px 26px rgba(0,0,0,0.22);
+            transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        /* Liquid highlight following pointer */
+        .color-box::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: radial-gradient(420px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.30), rgba(255,255,255,0.0) 58%);
+            opacity: 0;
+            transition: opacity .3s ease;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        /* Soft animated blob inside card */
+        .color-box::after {
+            content: '';
+            position: absolute;
+            width: 180px; height: 180px; border-radius: 50%;
+            left: -40px; top: -60px;
+            background: radial-gradient(circle, rgba(255,255,255,0.35), rgba(255,255,255,0) 70%);
+            filter: blur(18px);
+            opacity: .35;
+            transform: translate3d(0,0,0);
+            animation: blob 10s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes blob { to { transform: translate3d(40px, 30px, 0) scale(1.1); opacity: .45; } }
+        
+        /* Lift + glow on hover */
+        .color-box:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 16px 40px rgba(0,0,0,0.28); }
+        .color-box:hover::before { opacity: 1; }
+
+        /* Individual color themes with translucent gradients */
+        .box1 { background: linear-gradient(135deg, rgba(79,209,197,0.45), rgba(56,189,248,0.35)); }
+        .box2 { background: linear-gradient(135deg, rgba(236,72,153,0.45), rgba(250,204,21,0.35)); }
+        .box3 { background: linear-gradient(135deg, rgba(250,204,21,0.40), rgba(217,70,239,0.35)); }
+        /* Text layout inside each card */
+        .box-content {
+            text-align: center;
+            padding: 12px;
+        }
+        .box-content h2 {
+            margin: 0 0 8px;
+            font-size: 20px;
+            line-height: 1.2;
+            color: #f8fafc;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+            font-weight: 700;
+            letter-spacing: .2px;
+        }
+        .box-content p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.95;
+            color: #e5e7eb;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+            font-weight: 500;
+        }
+        /* High-contrast page title over the photo background */
+        .page-title {
+            color: #fff;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            margin: 16px 0;
+        }
+
+        /* Fixed local time badge at upper-left corner */
+        .time-badge {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.6);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: .3px;
+            box-shadow: 0 8px 20px rgba(0,0,0,.25);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+        }
+
+        /* Tablet responsiveness */
+        @media (max-width: 1024px) {
+            .center-container { height: auto; padding: 40px 24px; }
+            .color-box { width: 200px; height: 200px; margin: 12px; }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .center-container { flex-direction: column; height: auto; padding: 60px 16px; gap: 16px; }
+            .color-box { width: calc(100vw - 40px); max-width: 480px; height: 160px; margin: 0 auto; border-radius: 16px; }
+            .box-content h2 { font-size: 20px; }
+            .box-content p { font-size: 13px; }
+            .page-title { font-size: 18px; margin: 12px 0; }
+            .time-badge { top: 12px; left: 12px; padding: 8px 10px; font-size: 12px; }
+        }
+    </style>
+    <!-- React + ReactDOM for UMD in browser; Babel enables JSX in the inline script below -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+</head>
+<body>
+    <!-- React mounts into this root container -->
+    <div id="root"></div>
+
+    <script>
+        // Card metadata powering the three clickable boxes
+        const cards = [
+            { id: 1, title: "Admin's portfolio", subtitle: "CV, contacts and some other things", className: "box1", href: "index.html#resume" },
+            { id: 2, title: "Blog pages", subtitle: "Career advice & notes", className: "box2", href: "career-advice.html" },
+            { id: 3, title: "Playground", subtitle: "Experiments & demos", className: "box3", href: "explore.html" }
+        ];
+
+        // Presentational component: a single clickable card
+        function ColorCard({ title, subtitle, className, href }) {
+            return React.createElement('a', { 
+                className: `color-box ${className}`, 
+                href: href 
+            , onMouseMove: (e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - r.left) / r.width) * 100;
+                const y = ((e.clientY - r.top) / r.height) * 100;
+                e.currentTarget.style.setProperty('--mx', x + '%');
+                e.currentTarget.style.setProperty('--my', y + '%');
+            } }, React.createElement('div', { className: 'box-content' }, [
+                React.createElement('h2', { key: 'title' }, title),
+                React.createElement('p', { key: 'subtitle' }, subtitle)
+            ]));
+        }
+
+        // Root UI: renders heading, cards, and a live clock
+        function App() {
+            const [time, setTime] = React.useState(new Date());
+            // Update the clock every second; clean up on unmount
+            React.useEffect(() => {
+                const i = setInterval(() => setTime(new Date()), 1000);
+                return () => clearInterval(i);
+            }, []);
+            return React.createElement('div', null, [
+                React.createElement('div', { key: 'time', className: 'time-badge' }, 'Local time: ' + time.toLocaleTimeString()),
+                React.createElement('h2', { key: 'title', className: 'page-title' }, 'This is to explore more what I do for the web project'),
+                React.createElement('div', { key: 'container', className: 'center-container' }, 
+                    cards.map(card => React.createElement(ColorCard, { key: card.id, ...card }))
+                )
+            ]);
+        }
+
+        // Bootstrapping: create the React root and render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(App));
+    </script>
+</body>
+</html>
+
+--BOUNDARY--
