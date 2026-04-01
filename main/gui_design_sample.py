@@ -327,6 +327,47 @@ HTML_PAGE = """
             font-weight: 600;
         }
 
+        .credits-card {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 16px;
+            background: #f8fbff;
+            border: 1px solid #e4e9fb;
+        }
+
+        .credits-card h2 {
+            margin: 0 0 10px;
+            font-size: 22px;
+        }
+
+        .credits-card p {
+            margin: 0 0 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .member-chip {
+            padding: 14px;
+            border-radius: 14px;
+            background: #ffffff;
+            border: 1px solid #e7ecfb;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .member-chip b {
+            display: block;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
         @media (max-width: 1100px) {
             .page-shell {
                 grid-template-columns: 1fr;
@@ -351,6 +392,10 @@ HTML_PAGE = """
             }
 
             .highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .member-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -415,6 +460,20 @@ HTML_PAGE = """
                 <div class="feature"><b>Simple workflow</b><br>Download output immediately after fetch.</div>
             </section>
             <p class="notice">Tip: Include the full URL with http:// or https://</p>
+            <section class="credits-card">
+                <h2>Project credits</h2>
+                <p>Team members extracted from the proposal document, including student IDs and proposal-stage responsibilities.</p>
+                <div class="member-grid">
+                    <div class="member-chip"><b>Frank Shi</b>540435478<br>Crawler developer and data support.</div>
+                    <div class="member-chip"><b>Han Li</b>500047446<br>Technical implementation, crawling, and dataset storage.</div>
+                    <div class="member-chip"><b>Yaning Chen</b>540482069<br>Literature review lead, research analysis, and data support.</div>
+                    <div class="member-chip"><b>Tianze Xu</b>490040016<br>Librarian and meeting-record maintainer.</div>
+                    <div class="member-chip"><b>Yuqing Yang</b>530194981<br>Altmetric retrieval, cleaning, and structured output delivery.</div>
+                    <div class="member-chip"><b>Haobo Zhao</b>540654057<br>Pipeline integration and system execution.</div>
+                    <div class="member-chip"><b>Ruicheng Zhang</b>490030501<br>Team leader, coordinator, and client communicator.</div>
+                    <div class="member-chip"><b>Nho Thanh Le</b>530832278<br>Document review, web UI, backend, and pipeline support.</div>
+                </div>
+            </section>
         </main>
 
         <aside class="side-panel">
@@ -821,13 +880,36 @@ About_page = """
             font-weight: 700;
         }
 
+        .credits-board {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .credit-item {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: #f9fbff;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .credit-item b {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
         @media (max-width: 860px) {
             .page-shell,
             .grid,
             .timeline,
             .three-grid,
             .two-column-list,
-            .artifact-list {
+            .artifact-list,
+            .credits-board {
                 grid-template-columns: 1fr;
             }
 
@@ -1130,6 +1212,24 @@ About_page = """
                     Final evaluation, discussion, limitations, and conclusions.
                     <span class="tag">To be linked when ready</span>
                 </div>
+            </div>
+        </section>
+
+        <section class="section full-width">
+            <h2>Credits</h2>
+            <p>
+                The following member information was extracted from the proposal document and reflects the team list and
+                proposal-stage responsibilities.
+            </p>
+            <div class="credits-board">
+                <div class="credit-item"><b>Frank Shi (540435478)</b>Crawler developer and data support for identifier handling, URL generation, and collection stability.</div>
+                <div class="credit-item"><b>Han Li (500047446)</b>Technical implementation, web crawling, Altmetric integration, and dataset storage management.</div>
+                <div class="credit-item"><b>Yaning Chen (540482069)</b>Literature review lead, research analyst, and support for data verification and interpretation.</div>
+                <div class="credit-item"><b>Tianze Xu (490040016)</b>Librarian responsible for meeting minutes and report documentation.</div>
+                <div class="credit-item"><b>Yuqing Yang (530194981)</b>Altmetric data retrieval, cleaning, and CSV preparation for downstream analysis.</div>
+                <div class="credit-item"><b>Haobo Zhao (540654057)</b>Pipeline integration and system execution across MHTML crawling and Altmetric retrieval.</div>
+                <div class="credit-item"><b>Ruicheng Zhang (490030501)</b>Team leader, coordinator, and primary communicator with the client.</div>
+                <div class="credit-item"><b>Nho Thanh Le (530832278)</b>Document review, web-based UI, backend work, and data pipeline support.</div>
             </div>
         </section>
 
