@@ -171,6 +171,12 @@ HTML_PAGE = """
             margin-bottom: 18px;
         }
 
+        .topbar-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .nav-link {
             display: inline-flex;
             align-items: center;
@@ -424,7 +430,10 @@ HTML_PAGE = """
         <main class="app-card">
             <div class="topbar">
                 <span class="badge">CS15-2 Capstone Service</span>
-                <a class="nav-link" href="/about">About Project</a>
+                <div class="topbar-links">
+                    <a class="nav-link" href="/about">About Project</a>
+                    <a class="nav-link" href="/references">References</a>
+                </div>
             </div>
             <section class="progress-panel">
                 <div class="progress-header">
@@ -1255,6 +1264,320 @@ About_page = """
 </html>
 """
 
+
+References_page = """
+<!doctype html>
+<html>
+<head>
+    <title>References</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --page-bg: #f4f7ff;
+            --text-main: #1f2a44;
+            --text-muted: #58657d;
+            --panel: rgba(255, 255, 255, 0.92);
+            --line: #dfe7fb;
+            --brand: #4338ca;
+            --accent: #0891b2;
+            --shadow: 0 20px 45px rgba(22, 34, 66, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text-main);
+            background:
+                linear-gradient(180deg, rgba(248, 250, 255, 0.92), rgba(235, 250, 248, 0.94)),
+                url("/img/backgrounds/home.png") center/cover fixed;
+            min-height: 100vh;
+            padding: 28px 20px 48px;
+        }
+
+        .page {
+            width: min(980px, 100%);
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(3px);
+            padding: 28px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--brand);
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(28px, 4vw, 40px);
+        }
+
+        .subtitle {
+            margin: 0 0 18px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .reference-item {
+            display: block;
+            margin: 0;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: #f8fbff;
+            color: var(--text-main);
+            line-height: 1.8;
+            word-break: break-word;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .reference-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(67, 56, 202, 0.12);
+        }
+
+        .reference-item .doi {
+            color: var(--brand);
+            text-decoration: underline;
+        }
+
+        .reference-item .hint {
+            display: block;
+            margin-top: 6px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .reference-list {
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .reference-list-item {
+            margin: 0;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #f8fbff;
+            line-height: 1.7;
+            color: var(--text-main);
+        }
+
+        .reference-list-item a {
+            color: var(--brand);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="card">
+            <div class="nav">
+                <a href="/">Back to Home</a>
+                <a href="/about">About Project</a>
+            </div>
+            <h1>References</h1>
+            <p class="subtitle">Source list in APA 7 format. The first paper is the main inspiration and is pinned at the top.</p>
+            <a class="reference-item" href="/references/leap-2018-analysis">
+                Thelwall, M., Lehtisaari, M., Katsirea, I., Holmberg, K., &amp; Zheng, E.-T. (2025).
+                Does ChatGPT ignore article retractions and other reliability concerns?
+                <em>Learned Publishing, 38</em>(4), e2018.
+                <span class="doi">https://doi.org/10.1002/leap.2018</span>
+                <span class="hint">Click to view detailed analysis page (placeholder).</span>
+            </a>
+            <div class="reference-list">
+                <p class="reference-list-item">
+                    Abdali, S., Shaham, S., &amp; Krishnamachari, B. (2024). Multi-modal misinformation detection:
+                    Approaches, challenges and opportunities. <em>ACM Computing Surveys, 57</em>(3), 1-29.
+                    <a href="https://doi.org/10.1145/3697349" target="_blank" rel="noopener noreferrer">https://doi.org/10.1145/3697349</a>
+                </p>
+                <p class="reference-list-item">
+                    Abdelnabi, S., Hasan, R., &amp; Fritz, M. (2022). Open-domain, content-based, multi-modal
+                    fact-checking of out-of-context images via online resources. In <em>Proceedings of the IEEE/CVF Conference on
+                    Computer Vision and Pattern Recognition</em> (pp. 14940-14949).
+                    <a href="https://doi.org/10.1109/CVPR52688.2022.01452" target="_blank" rel="noopener noreferrer">https://doi.org/10.1109/CVPR52688.2022.01452</a>
+                </p>
+                <p class="reference-list-item">
+                    D'Ulizia, A., Caschera, M. C., Ferri, F., &amp; Grifoni, P. (2021). Fake news detection: A survey of
+                    evaluation datasets. <em>PeerJ Computer Science, 7</em>, e518.
+                    <a href="https://doi.org/10.7717/peerj-cs.518" target="_blank" rel="noopener noreferrer">https://doi.org/10.7717/peerj-cs.518</a>
+                </p>
+                <p class="reference-list-item">
+                    Papadopoulos, S.-I., Koutlis, C., Papadopoulos, S., &amp; Petrantonakis, P. C. (2024). VERITE: A robust
+                    benchmark for multimodal misinformation detection accounting for unimodal bias.
+                    <em>International Journal of Multimedia Information Retrieval, 13</em>, Article 4.
+                    <a href="https://doi.org/10.1007/s13735-023-00312-6" target="_blank" rel="noopener noreferrer">https://doi.org/10.1007/s13735-023-00312-6</a>
+                </p>
+                <p class="reference-list-item">
+                    Przybyla, P. (2020). Capturing the style of fake news. <em>Proceedings of the AAAI Conference on Artificial Intelligence, 34</em>(1), 490-497.
+                    <a href="https://doi.org/10.1609/aaai.v34i01.5386" target="_blank" rel="noopener noreferrer">https://doi.org/10.1609/aaai.v34i01.5386</a>
+                </p>
+                <p class="reference-list-item">
+                    Rashkin, H., Choi, E., Jang, J. Y., Volkova, S., &amp; Choi, Y. (2017). Truth of varying shades:
+                    Analyzing language in fake news and political fact-checking. In <em>Proceedings of the 2017 Conference on Empirical
+                    Methods in Natural Language Processing</em> (pp. 2931-2937). Association for Computational Linguistics.
+                    <a href="https://doi.org/10.18653/v1/D17-1317" target="_blank" rel="noopener noreferrer">https://doi.org/10.18653/v1/D17-1317</a>
+                </p>
+                <p class="reference-list-item">
+                    Sabir, E., AbdAlmageed, W., Wu, Y., &amp; Natarajan, P. (2018). Deep multimodal image-repurposing detection.
+                    In <em>Proceedings of the 26th ACM International Conference on Multimedia</em> (pp. 1337-1345).
+                </p>
+                <p class="reference-list-item">
+                    Serghiou, S., Marton, R. M., &amp; Ioannidis, J. P. A. (2021). Media and social media attention to
+                    retracted articles according to Altmetric. <em>PLOS ONE, 16</em>(5), e0248625.
+                    <a href="https://doi.org/10.1371/journal.pone.0248625" target="_blank" rel="noopener noreferrer">https://doi.org/10.1371/journal.pone.0248625</a>
+                </p>
+                <p class="reference-list-item">
+                    Shu, K., Mahudeswaran, D., Wang, S., Lee, D., &amp; Liu, H. (2020). FakeNewsNet: A data repository
+                    with news content, social context, and spatiotemporal information for studying fake news on social media.
+                    <em>Big Data, 8</em>(3), 171-188.
+                    <a href="https://doi.org/10.1089/big.2020.0062" target="_blank" rel="noopener noreferrer">https://doi.org/10.1089/big.2020.0062</a>
+                </p>
+                <p class="reference-list-item">
+                    Valinciute, A., &amp; Halffman, W. (2025). Do journalists update retracted science news?
+                    <em>Journalism Practice</em>, 1-23.
+                    <a href="https://doi.org/10.1080/17512786.2025.2540460" target="_blank" rel="noopener noreferrer">https://doi.org/10.1080/17512786.2025.2540460</a>
+                </p>
+                <p class="reference-list-item">
+                    Wang, Y., Ma, F., Jin, Z., Yuan, Y., Xun, G., Jha, K., Su, L., &amp; Gao, J. (2018). EANN: Event
+                    adversarial neural networks for multi-modal fake news detection. In <em>Proceedings of the 24th ACM SIGKDD International
+                    Conference on Knowledge Discovery &amp; Data Mining</em> (pp. 849-857).
+                    <a href="https://doi.org/10.1145/3219819.3219903" target="_blank" rel="noopener noreferrer">https://doi.org/10.1145/3219819.3219903</a>
+                </p>
+                <p class="reference-list-item">
+                    Zhou, X., &amp; Zafarani, R. (2020). A survey of fake news. <em>ACM Computing Surveys, 53</em>(5), 1-40.
+                    <a href="https://doi.org/10.1145/3395046" target="_blank" rel="noopener noreferrer">https://doi.org/10.1145/3395046</a>
+                </p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+"""
+
+Reference_detail_page = """
+<!doctype html>
+<html>
+<head>
+    <title>Reference Analysis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --text-main: #1f2a44;
+            --text-muted: #58657d;
+            --panel: rgba(255, 255, 255, 0.92);
+            --line: #dfe7fb;
+            --brand: #4338ca;
+            --shadow: 0 20px 45px rgba(22, 34, 66, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text-main);
+            background:
+                linear-gradient(180deg, rgba(248, 250, 255, 0.92), rgba(235, 250, 248, 0.94)),
+                url("/img/backgrounds/home.png") center/cover fixed;
+            min-height: 100vh;
+            padding: 28px 20px 48px;
+        }
+
+        .page {
+            width: min(980px, 100%);
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            padding: 28px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--brand);
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(26px, 4vw, 38px);
+        }
+
+        .citation {
+            margin: 0 0 14px;
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #f8fbff;
+            line-height: 1.7;
+        }
+
+        .placeholder {
+            margin: 0;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="card">
+            <div class="nav">
+                <a href="/references">Back to References</a>
+                <a href="/">Back to Home</a>
+            </div>
+            <h1>Detailed Analysis (Temporary Blank)</h1>
+            <p class="citation">
+                Thelwall, M., Lehtisaari, M., Katsirea, I., Holmberg, K., &amp; Zheng, E.-T. (2025).
+                Does ChatGPT ignore article retractions and other reliability concerns?
+                <em>Learned Publishing, 38</em>(4), e2018.
+            </p>
+            <p class="placeholder">
+                This section is intentionally blank for now. Detailed analysis content will be added in a later update.
+            </p>
+        </section>
+    </div>
+</body>
+</html>
+"""
+
 @app.route("/img/<path:filename>")
 def image_assets(filename):
     return send_from_directory(IMG_DIR, filename)
@@ -1267,6 +1590,14 @@ def home():
 @app.route("/about", methods=["GET"])
 def about():
     return render_template_string(About_page)
+
+@app.route("/references", methods=["GET"])
+def references():
+    return render_template_string(References_page)
+
+@app.route("/references/leap-2018-analysis", methods=["GET"])
+def reference_leap_2018_analysis():
+    return render_template_string(Reference_detail_page)
 
 @app.route("/save", methods=["POST"])
 def save_page():
