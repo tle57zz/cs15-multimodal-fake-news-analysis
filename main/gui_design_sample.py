@@ -6,6 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 IMG_DIR = PROJECT_ROOT / "img"
+DOCUMENTS_DIR = PROJECT_ROOT / "documents"
 
 HTML_PAGE = """
 <!doctype html>
@@ -431,6 +432,7 @@ HTML_PAGE = """
             <div class="topbar">
                 <span class="badge">CS15-2 Capstone Service</span>
                 <div class="topbar-links">
+                    <a class="nav-link" href="/proposals">Proposals</a>
                     <a class="nav-link" href="/about">About Project</a>
                     <a class="nav-link" href="/references">References</a>
                 </div>
@@ -660,6 +662,13 @@ About_page = """
             align-items: center;
             gap: 12px;
             margin-bottom: 14px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .eyebrow {
@@ -950,7 +959,10 @@ About_page = """
         <section class="hero">
             <div class="nav">
                 <span class="eyebrow">About the Capstone</span>
-                <a href="/">Back to Home</a>
+                <div class="nav-actions">
+                    <a href="/proposals">Proposals</a>
+                    <a href="/">Back to Home</a>
+                </div>
             </div>
             <section class="progress-panel">
                 <div class="progress-header">
@@ -1578,9 +1590,910 @@ Reference_detail_page = """
 </html>
 """
 
+Proposals_page = """
+<!doctype html>
+<html>
+<head>
+    <title>Project Proposals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --text-main: #1f2a44;
+            --text-muted: #58657d;
+            --panel: rgba(255, 255, 255, 0.92);
+            --line: #dfe7fb;
+            --brand: #4338ca;
+            --accent: #0891b2;
+            --shadow: 0 20px 45px rgba(22, 34, 66, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text-main);
+            background:
+                linear-gradient(180deg, rgba(248, 250, 255, 0.92), rgba(235, 250, 248, 0.94)),
+                url("/img/backgrounds/home.png") center/cover fixed;
+        }
+
+        .page-shell {
+            width: min(1540px, 100%);
+            margin: 0 auto;
+            padding: 28px 20px 48px;
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1080px) 220px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .page { width: 100%; }
+
+        .hero, .section, .side-panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(3px);
+        }
+
+        .hero, .section { padding: 28px; margin-bottom: 18px; }
+
+        .side-panel {
+            padding: 22px 18px;
+            position: sticky;
+            top: 28px;
+        }
+
+        .side-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .side-copy {
+            margin: 0 0 18px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .vertical-progress {
+            display: grid;
+            grid-template-columns: 18px 1fr;
+            gap: 14px;
+        }
+
+        .vertical-progress.right {
+            grid-template-columns: 1fr 18px;
+        }
+
+        .vertical-track {
+            position: relative;
+            height: 320px;
+            width: 12px;
+            border-radius: 999px;
+            background: #e6ebff;
+            overflow: hidden;
+            margin: 4px auto 0;
+        }
+
+        .vertical-fill {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 10%;
+            border-radius: 999px;
+            background: linear-gradient(180deg, var(--brand), var(--accent));
+        }
+
+        .vertical-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .vertical-step {
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #f5f7ff;
+            border: 1px solid var(--line);
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .vertical-step b {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .vertical-step.current {
+            background: linear-gradient(135deg, rgba(67, 56, 202, 0.12), rgba(8, 145, 178, 0.12));
+            border-color: rgba(67, 56, 202, 0.22);
+            color: #2f3a56;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #155e75;
+            background: #cffafe;
+        }
+
+        .nav a, .proposal-link {
+            text-decoration: none;
+            color: var(--brand);
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(30px, 4.6vw, 46px);
+            line-height: 1.1;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            font-size: 22px;
+        }
+
+        p {
+            margin: 0 0 12px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .progress-panel {
+            margin: 8px 0 24px;
+            padding: 18px;
+            border-radius: 18px;
+            background: #f8fbff;
+            border: 1px solid var(--line);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .progress-right { color: var(--brand); }
+
+        .progress-track {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: #e6ebff;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .progress-fill {
+            width: 10%;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand), var(--accent));
+        }
+
+        .progress-milestones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .progress-step {
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #3730a3;
+            background: #eef2ff;
+        }
+
+        .progress-step.current {
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand), var(--accent));
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .proposal-card {
+            padding: 22px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: #f9fbff;
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 14px 0 18px;
+        }
+
+        .pill {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 860px) {
+            .page-shell, .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .side-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <aside class="side-panel">
+            <h2 class="side-title">Left progress bar</h2>
+            <p class="side-copy">Proposal evidence is now documented here as a project artifact and linked to the current stage of the capstone.</p>
+            <div class="vertical-progress">
+                <div class="vertical-track"><div class="vertical-fill"></div></div>
+                <div class="vertical-steps">
+                    <div class="vertical-step current"><b>Proposal</b>Current documented milestone.</div>
+                    <div class="vertical-step"><b>Progress Report</b>Next formal project checkpoint.</div>
+                    <div class="vertical-step"><b>Presentation</b>Demo and communication milestone.</div>
+                    <div class="vertical-step"><b>Final Delivery</b>Report and full deliverables.</div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="page">
+            <section class="hero">
+                <div class="nav">
+                    <span class="eyebrow">Proposal Archive</span>
+                    <div class="nav-actions">
+                        <a href="/">Home</a>
+                        <a href="/about">About</a>
+                        <a href="/references">References</a>
+                    </div>
+                </div>
+                <section class="progress-panel">
+                    <div class="progress-header">
+                        <span>Current phase: Proposal</span>
+                        <span class="progress-right">10% complete</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill"></div></div>
+                    <div class="progress-milestones">
+                        <span class="progress-step current">Proposal 10%</span>
+                        <span class="progress-step">Progress Report 10%</span>
+                        <span class="progress-step">Presentation 15%</span>
+                        <span class="progress-step">Final Report / Deliverables 65%</span>
+                    </div>
+                </section>
+                <h1>Project proposals and proposal-stage evidence</h1>
+                <p>
+                    This page demonstrates proposal artifacts for the CS15-2 capstone project and turns the submitted
+                    proposal PDF into a readable, web-based summary that is easier to browse than a raw document.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>Available proposals</h2>
+                <div class="cards">
+                    <article class="proposal-card">
+                        <h2>First proposal</h2>
+                        <p>
+                            Based on `CS15-2_Group_Proposal.docx.pdf`, this proposal defines the team's initial framing for
+                            comparing true and fake news in both text and visuals, with a strong focus on building the shared
+                            dataset foundation first.
+                        </p>
+                        <div class="meta-row">
+                            <span class="pill">Group proposal</span>
+                            <span class="pill">5703 capstone</span>
+                            <span class="pill">Proposal stage</span>
+                        </div>
+                        <ul>
+                            <li>Motivates the project through retracted research, scientific credibility, and multimodal misinformation.</li>
+                            <li>Prioritizes building a reliable base dataset before locking the final analysis direction.</li>
+                            <li>Describes methodology, roles, resources, deliverables, and milestone planning.</li>
+                        </ul>
+                        <p style="margin-top: 16px;">
+                            <a class="proposal-link" href="/proposals/first-proposal">Open first proposal page</a>
+                        </p>
+                    </article>
+
+                    <article class="proposal-card">
+                        <h2>Source document</h2>
+                        <p>
+                            The website summary is derived from the submitted group proposal PDF and is intended to present
+                            the same project direction in a clearer web format for demonstration.
+                        </p>
+                        <div class="meta-row">
+                            <span class="pill">24 pages</span>
+                            <span class="pill">Team-authored</span>
+                            <span class="pill">Proposal evidence</span>
+                        </div>
+                        <ul>
+                            <li>Group members: Frank Shi, Han Li, Yaning Chen, Tianze Xu, Yuqing Yang, Haobo Zhao, Ruicheng Zhang, and Nho Thanh Le.</li>
+                            <li>Main theme: true versus fake news using textual and visual signals.</li>
+                            <li>Immediate focus: a reliable and traceable dataset pipeline using DOI, PMID, MHTML, and Altmetric-linked data.</li>
+                        </ul>
+                        <p style="margin-top: 16px;">
+                            <a class="proposal-link" href="/documents/CS15-2_Group_Proposal.docx.pdf">Open proposal PDF</a>
+                        </p>
+                    </article>
+                </div>
+            </section>
+        </div>
+
+        <aside class="side-panel">
+            <h2 class="side-title">Right progress bar</h2>
+            <p class="side-copy">The proposal archive now gives the project a clear public-facing page for the current milestone.</p>
+            <div class="vertical-progress right">
+                <div class="vertical-steps">
+                    <div class="vertical-step current"><b>10%</b>Proposal documented and linked.</div>
+                    <div class="vertical-step"><b>20%</b>Progress evidence will follow implementation.</div>
+                    <div class="vertical-step"><b>35%</b>Presentation materials will be added later.</div>
+                    <div class="vertical-step"><b>100%</b>Final deliverables complete the archive.</div>
+                </div>
+                <div class="vertical-track"><div class="vertical-fill"></div></div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
+"""
+
+First_proposal_page = """
+<!doctype html>
+<html>
+<head>
+    <title>First Proposal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --text-main: #1f2a44;
+            --text-muted: #58657d;
+            --panel: rgba(255, 255, 255, 0.92);
+            --line: #dfe7fb;
+            --brand: #4338ca;
+            --accent: #0891b2;
+            --shadow: 0 20px 45px rgba(22, 34, 66, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text-main);
+            background:
+                linear-gradient(180deg, rgba(248, 250, 255, 0.92), rgba(235, 250, 248, 0.94)),
+                url("/img/backgrounds/home.png") center/cover fixed;
+        }
+
+        .page-shell {
+            width: min(1540px, 100%);
+            margin: 0 auto;
+            padding: 28px 20px 48px;
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1080px) 220px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .page { width: 100%; }
+
+        .hero, .section, .side-panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(3px);
+        }
+
+        .hero, .section { padding: 28px; margin-bottom: 18px; }
+
+        .side-panel {
+            padding: 22px 18px;
+            position: sticky;
+            top: 28px;
+        }
+
+        .side-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .side-copy {
+            margin: 0 0 18px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .vertical-progress {
+            display: grid;
+            grid-template-columns: 18px 1fr;
+            gap: 14px;
+        }
+
+        .vertical-progress.right {
+            grid-template-columns: 1fr 18px;
+        }
+
+        .vertical-track {
+            position: relative;
+            height: 320px;
+            width: 12px;
+            border-radius: 999px;
+            background: #e6ebff;
+            overflow: hidden;
+            margin: 4px auto 0;
+        }
+
+        .vertical-fill {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 10%;
+            border-radius: 999px;
+            background: linear-gradient(180deg, var(--brand), var(--accent));
+        }
+
+        .vertical-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .vertical-step {
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #f5f7ff;
+            border: 1px solid var(--line);
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .vertical-step b {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .vertical-step.current {
+            background: linear-gradient(135deg, rgba(67, 56, 202, 0.12), rgba(8, 145, 178, 0.12));
+            border-color: rgba(67, 56, 202, 0.22);
+            color: #2f3a56;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #155e75;
+            background: #cffafe;
+        }
+
+        .nav a, .download-link {
+            text-decoration: none;
+            color: var(--brand);
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(30px, 4.6vw, 46px);
+            line-height: 1.1;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            font-size: 22px;
+        }
+
+        p {
+            margin: 0 0 12px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .progress-panel {
+            margin: 8px 0 24px;
+            padding: 18px;
+            border-radius: 18px;
+            background: #f8fbff;
+            border: 1px solid var(--line);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .progress-right { color: var(--brand); }
+
+        .progress-track {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: #e6ebff;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .progress-fill {
+            width: 10%;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand), var(--accent));
+        }
+
+        .progress-milestones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .progress-step {
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #3730a3;
+            background: #eef2ff;
+        }
+
+        .progress-step.current {
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand), var(--accent));
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .step {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: #f8fbff;
+        }
+
+        .step b {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .member-card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: #f9fbff;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .member-card b {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        @media (max-width: 860px) {
+            .page-shell, .grid, .timeline, .member-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .side-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <aside class="side-panel">
+            <h2 class="side-title">Left progress bar</h2>
+            <p class="side-copy">This subpage demonstrates the first formal proposal and anchors the project to the current milestone.</p>
+            <div class="vertical-progress">
+                <div class="vertical-track"><div class="vertical-fill"></div></div>
+                <div class="vertical-steps">
+                    <div class="vertical-step current"><b>Proposal</b>Current submission represented here.</div>
+                    <div class="vertical-step"><b>Progress Report</b>Will document later implementation evidence.</div>
+                    <div class="vertical-step"><b>Presentation</b>Will capture demo-stage communication.</div>
+                    <div class="vertical-step"><b>Final Delivery</b>Will summarize final outcomes.</div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="page">
+            <section class="hero">
+                <div class="nav">
+                    <span class="eyebrow">First Proposal</span>
+                    <div class="nav-actions">
+                        <a href="/proposals">Back to Proposals</a>
+                        <a href="/about">About</a>
+                        <a href="/">Home</a>
+                    </div>
+                </div>
+                <section class="progress-panel">
+                    <div class="progress-header">
+                        <span>Current phase: Proposal</span>
+                        <span class="progress-right">10% complete</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill"></div></div>
+                    <div class="progress-milestones">
+                        <span class="progress-step current">Proposal 10%</span>
+                        <span class="progress-step">Progress Report 10%</span>
+                        <span class="progress-step">Presentation 15%</span>
+                        <span class="progress-step">Final Report / Deliverables 65%</span>
+                    </div>
+                </section>
+                <h1>CS15-2 group proposal: first proposal demonstration</h1>
+                <p>
+                    This page demonstrates the submitted proposal in web form. It is based on the PDF and focuses on the
+                    core project story: problem motivation, proposal-stage scope, methodology, roles, and milestone plan.
+                </p>
+                <p>
+                    <a class="download-link" href="/documents/CS15-2_Group_Proposal.docx.pdf">Open the original proposal PDF</a>
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>Proposal abstract</h2>
+                <p>
+                    The proposal frames withdrawn research papers as a practical proxy for problematic or false scientific
+                    information. It proposes a multimodal comparison between retracted and reliable content using textual,
+                    visual, and structural evidence preserved through archived webpages.
+                </p>
+                <p>
+                    The immediate goal is not yet a final production detection system. Instead, the proposal prioritizes a
+                    reliable, large-scale, traceable data foundation built from DOI pages, PubMed records, MHTML captures,
+                    and Altmetric-linked information.
+                </p>
+            </section>
+
+            <div class="grid">
+                <section class="section">
+                    <h2>Problem focus</h2>
+                    <ul>
+                        <li>Online readers are exposed to large volumes of information that are not always trustworthy.</li>
+                        <li>News can continue citing research even after the source paper has been retracted.</li>
+                        <li>Misleading visuals can amplify credibility and make false claims feel more convincing.</li>
+                        <li>The proposal therefore focuses on building a reliable base dataset before committing to a narrower later-stage analytical path.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>Immediate proposal-stage question</h2>
+                    <p>The proposal defines the current core problem as:</p>
+                    <p>
+                        <b>How can a reliable and well-linked base dataset be built from the client-provided retraction-related
+                        records, so that it can support later analysis of true and fake news in whichever group-specific direction is assigned?</b>
+                    </p>
+                </section>
+            </div>
+
+            <div class="grid">
+                <section class="section">
+                    <h2>Aims and objectives</h2>
+                    <ul>
+                        <li>Clean and prepare the preliminary client-provided CSV dataset.</li>
+                        <li>Validate the four main identifiers used for retrieval and linking.</li>
+                        <li>Build a reproducible pipeline for collecting and preprocessing MHTML webpage snapshots.</li>
+                        <li>Retrieve Altmetric and/or PlumX detail-page data and link outputs back to original records.</li>
+                        <li>Organize outputs in a machine-readable and traceable structure for later analysis.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>Proposal scope</h2>
+                    <ul>
+                        <li>In scope now: dataset cleaning, identifier validation, MHTML collection, attention-data linkage, and shared base-dataset preparation.</li>
+                        <li>Not fully fixed yet: the later analytical direction, because the client had not formally assigned each group's final path at proposal time.</li>
+                        <li>Out of scope now: a production-ready misinformation system or a fully locked downstream methodology.</li>
+                    </ul>
+                </section>
+            </div>
+
+            <div class="grid">
+                <section class="section">
+                    <h2>Methodology summary</h2>
+                    <ul>
+                        <li>Use a data-driven multimodal workflow combining data collection, cleaning, organization, and analysis.</li>
+                        <li>Collect publisher and PubMed pages using DOI and PMID identifiers.</li>
+                        <li>Archive rendered webpages as MHTML to preserve text, layout, and structural evidence.</li>
+                        <li>Retrieve external attention signals such as Altmetric-linked news and social references.</li>
+                        <li>Filter toward a reliable analytical dataset with complete and valid retrieved components.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>Resources and tools</h2>
+                    <ul>
+                        <li>Python for the main data pipeline.</li>
+                        <li>Playwright for webpage crawling and MHTML capture.</li>
+                        <li>Requests for HTTP-based retrieval tasks.</li>
+                        <li>Altmetric API for attention and external-news related data.</li>
+                        <li>GitHub and cloud storage for collaboration, traceability, and backup.</li>
+                    </ul>
+                </section>
+            </div>
+
+            <section class="section">
+                <h2>Expected deliverables in the proposal</h2>
+                <ul>
+                    <li>A linked dataset containing retrieved detail-page data and identifiers from the provided source data.</li>
+                    <li>A curated dataset of real and fake news articles with associated images.</li>
+                    <li>Textual findings comparing writing patterns, sentiment, and style.</li>
+                    <li>Image findings comparing visual characteristics used in misleading versus reliable content.</li>
+                    <li>A comparative summary across categories and an integrated multimodal methodology.</li>
+                    <li>A final report and visualizations that summarize process and outcomes.</li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2>Proposal milestone plan</h2>
+                <div class="timeline">
+                    <div class="step">
+                        <b>Weeks 2-5</b>
+                        Review specification, examine the client dataset, develop Altmetric fetching, and submit the proposal.
+                    </div>
+                    <div class="step">
+                        <b>Weeks 6-9</b>
+                        Build the base dataset, clean data, start exploratory analysis, and prepare the progress report.
+                    </div>
+                    <div class="step">
+                        <b>Weeks 10-13</b>
+                        Integrate textual and visual findings, prepare documentation, and produce the final report.
+                    </div>
+                    <div class="step">
+                        <b>Week 15</b>
+                        Deliver the final presentation.
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>Proposal team credits</h2>
+                <div class="member-grid">
+                    <div class="member-card"><b>Frank Shi (540435478)</b>Crawler developer and data support.</div>
+                    <div class="member-card"><b>Han Li (500047446)</b>Technical implementation, crawling, and storage.</div>
+                    <div class="member-card"><b>Yaning Chen (540482069)</b>Literature review lead and research analysis.</div>
+                    <div class="member-card"><b>Tianze Xu (490040016)</b>Librarian and report documentation.</div>
+                    <div class="member-card"><b>Yuqing Yang (530194981)</b>Altmetric retrieval and CSV preparation.</div>
+                    <div class="member-card"><b>Haobo Zhao (540654057)</b>Pipeline integration and system execution.</div>
+                    <div class="member-card"><b>Ruicheng Zhang (490030501)</b>Team leader, coordinator, and communicator.</div>
+                    <div class="member-card"><b>Nho Thanh Le (530832278)</b>Document review, UI, backend, and pipeline support.</div>
+                </div>
+            </section>
+        </div>
+
+        <aside class="side-panel">
+            <h2 class="side-title">Right progress bar</h2>
+            <p class="side-copy">This page makes the first proposal easier to present during the proposal stage and easier to revisit later.</p>
+            <div class="vertical-progress right">
+                <div class="vertical-steps">
+                    <div class="vertical-step current"><b>10%</b>First proposal documented here.</div>
+                    <div class="vertical-step"><b>20%</b>Progress report page can be added later.</div>
+                    <div class="vertical-step"><b>35%</b>Presentation page can follow after demo prep.</div>
+                    <div class="vertical-step"><b>100%</b>Final report page can complete the sequence.</div>
+                </div>
+                <div class="vertical-track"><div class="vertical-fill"></div></div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
+"""
+
 @app.route("/img/<path:filename>")
 def image_assets(filename):
     return send_from_directory(IMG_DIR, filename)
+
+
+@app.route("/documents/<path:filename>")
+def document_assets(filename):
+    return send_from_directory(DOCUMENTS_DIR, filename)
 
 @app.route("/", methods=["GET"])
 def home():
@@ -1590,6 +2503,16 @@ def home():
 @app.route("/about", methods=["GET"])
 def about():
     return render_template_string(About_page)
+
+
+@app.route("/proposals", methods=["GET"])
+def proposals():
+    return render_template_string(Proposals_page)
+
+
+@app.route("/proposals/first-proposal", methods=["GET"])
+def first_proposal():
+    return render_template_string(First_proposal_page)
 
 @app.route("/references", methods=["GET"])
 def references():
