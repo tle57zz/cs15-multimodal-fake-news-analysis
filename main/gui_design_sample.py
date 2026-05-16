@@ -1410,7 +1410,11 @@ References_page = """
         <section class="card">
             <div class="nav">
                 <a href="/">Back to Home</a>
-                <a href="/about">About Project</a>
+                <div>
+                    <a href="/about">About Project</a>
+                    <a href="/proposals">Proposals</a>
+                    <a href="/llm">LLM</a>
+                </div>
             </div>
             <h1>References</h1>
             <p class="subtitle">Source list in APA 7 format. The first paper is the main inspiration and is pinned at the top.</p>
@@ -1900,6 +1904,7 @@ Proposals_page = """
                         <a href="/">Home</a>
                         <a href="/about">About</a>
                         <a href="/references">References</a>
+                        <a href="/llm">LLM</a>
                     </div>
                 </div>
                 <section class="progress-panel">
@@ -2315,6 +2320,8 @@ First_proposal_page = """
                     <div class="nav-actions">
                         <a href="/proposals">Back to Proposals</a>
                         <a href="/about">About</a>
+                        <a href="/references">References</a>
+                        <a href="/llm">LLM</a>
                         <a href="/">Home</a>
                     </div>
                 </div>
