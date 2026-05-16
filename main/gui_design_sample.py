@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, send_from_directory, render_template_string
+from flask import Flask, jsonify, request, send_file, send_from_directory, render_template_string
 import requests
 from pathlib import Path
 from datetime import datetime
@@ -435,6 +435,7 @@ HTML_PAGE = """
                     <a class="nav-link" href="/proposals">Proposals</a>
                     <a class="nav-link" href="/about">About Project</a>
                     <a class="nav-link" href="/references">References</a>
+                    <a class="nav-link" href="/llm">LLM</a>
                 </div>
             </div>
             <section class="progress-panel">
@@ -961,6 +962,8 @@ About_page = """
                 <span class="eyebrow">About the Capstone</span>
                 <div class="nav-actions">
                     <a href="/proposals">Proposals</a>
+                    <a href="/references">References</a>
+                    <a href="/llm">LLM</a>
                     <a href="/">Back to Home</a>
                 </div>
             </div>
@@ -2486,6 +2489,239 @@ First_proposal_page = """
 </html>
 """
 
+LLM_page = """
+<!doctype html>
+<html>
+<head>
+    <title>LLM Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --text-main: #1f2a44;
+            --text-muted: #58657d;
+            --panel: rgba(255, 255, 255, 0.92);
+            --line: #dfe7fb;
+            --brand: #4338ca;
+            --accent: #0891b2;
+            --shadow: 0 20px 45px rgba(22, 34, 66, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text-main);
+            background:
+                linear-gradient(180deg, rgba(248, 250, 255, 0.92), rgba(235, 250, 248, 0.94)),
+                url("/img/backgrounds/home.png") center/cover fixed;
+            min-height: 100vh;
+            padding: 28px 20px 48px;
+        }
+
+        .page { width: min(980px, 100%); margin: 0 auto; }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(3px);
+            padding: 28px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--brand);
+            font-weight: 700;
+            margin-left: 12px;
+        }
+
+        .nav a:first-child { margin-left: 0; }
+        h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 40px); }
+
+        .subtitle {
+            margin: 0 0 18px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .model-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(8, 145, 178, 0.12);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .chat-log {
+            min-height: 320px;
+            max-height: 55vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: #f8fbff;
+            margin-bottom: 16px;
+        }
+
+        .msg {
+            max-width: 92%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            line-height: 1.65;
+            word-break: break-word;
+        }
+
+        .msg.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            color: #fff;
+        }
+
+        .msg.assistant {
+            align-self: flex-start;
+            background: #fff;
+            border: 1px solid var(--line);
+        }
+
+        .msg.assistant table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .msg.assistant th, .msg.assistant td {
+            border: 1px solid var(--line);
+            padding: 8px 10px;
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chat-form textarea {
+            flex: 1 1 280px;
+            min-height: 88px;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            font: inherit;
+            resize: vertical;
+        }
+
+        .chat-form button {
+            align-self: flex-end;
+            padding: 14px 22px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .chat-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .status { margin-top: 10px; color: var(--text-muted); font-size: 14px; min-height: 20px; }
+        .error { color: #b91c1c; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="card">
+            <div class="nav">
+                <a href="/">Back to Home</a>
+                <div>
+                    <a href="/proposals">Proposals</a>
+                    <a href="/about">About Project</a>
+                    <a href="/references">References</a>
+                </div>
+            </div>
+            <h1>LLM Chat</h1>
+            <p class="subtitle">Ask questions and get answers from <b>gpt-oss:120b-cloud</b> via AnyLLM and Ollama.</p>
+            <span class="model-badge">Model: gpt-oss:120b-cloud</span>
+
+            <div id="chat-log" class="chat-log" aria-live="polite"></div>
+            <form id="chat-form" class="chat-form">
+                <textarea id="prompt" name="message" placeholder="Ask about fake news, multimodal analysis, or anything else..." required></textarea>
+                <button type="submit" id="send-btn">Send</button>
+            </form>
+            <p id="status" class="status"></p>
+        </section>
+    </div>
+    <script>
+        const chatLog = document.getElementById("chat-log");
+        const chatForm = document.getElementById("chat-form");
+        const promptInput = document.getElementById("prompt");
+        const sendBtn = document.getElementById("send-btn");
+        const statusEl = document.getElementById("status");
+
+        function appendMessage(role, html) {
+            const el = document.createElement("div");
+            el.className = "msg " + role;
+            el.innerHTML = html;
+            chatLog.appendChild(el);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        chatForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const message = promptInput.value.trim();
+            if (!message) return;
+
+            appendMessage("user", message.replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+            promptInput.value = "";
+            sendBtn.disabled = true;
+            statusEl.textContent = "Thinking...";
+            statusEl.classList.remove("error");
+
+            try {
+                const res = await fetch("/llm/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Request failed");
+
+                const rendered = (typeof marked !== "undefined")
+                    ? marked.parse(data.answer)
+                    : data.answer.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                appendMessage("assistant", rendered);
+                statusEl.textContent = "Model: " + (data.model || "gpt-oss:120b-cloud");
+            } catch (err) {
+                statusEl.textContent = err.message;
+                statusEl.classList.add("error");
+            } finally {
+                sendBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+"""
+
+
 @app.route("/img/<path:filename>")
 def image_assets(filename):
     return send_from_directory(IMG_DIR, filename)
@@ -2517,6 +2753,27 @@ def first_proposal():
 @app.route("/references", methods=["GET"])
 def references():
     return render_template_string(References_page)
+
+@app.route("/llm", methods=["GET"])
+def llm_page():
+    return render_template_string(LLM_page)
+
+
+@app.route("/llm/chat", methods=["POST"])
+def llm_chat():
+    data = request.get_json(silent=True) or {}
+    message = (data.get("message") or "").strip()
+    if not message:
+        return jsonify({"error": "Message is required."}), 400
+
+    try:
+        from llm_models.chat_service import chat_with_model
+
+        result = chat_with_model(message)
+        return jsonify(result)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
 
 @app.route("/references/leap-2018-analysis", methods=["GET"])
 def reference_leap_2018_analysis():
